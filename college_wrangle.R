@@ -1,45 +1,28 @@
 library(tidyverse)
-library(devtools)
-devtools::install_github("UrbanInstitute/education-data-package-r")
 library(educationdata)
 
-admit_df<-get_education_data(level = 'college-university', 
-source = 'ipeds', 
-topic = 'admissions-requirements',
-filters=list(year=1997:2014),
-add_labels = TRUE)
+admit_df<-read.csv("admit.csv")
+earnings_df<-read.csv("earnings.csv")
+repay_df<-read.csv("repay.csv")
+grad_final<-("grad.csv")
 
-earnings_df<-get_education_data(level = 'college-university', 
-source = 'scorecard', 
-topic = 'earnings',
-filters=list(year=2004:2014),
-add_labels = TRUE)
+admit_df <- admit_df %>% unite(match,unitid,year,remove=FALSE)
 
-repay_df<-get_education_data(level = 'college-university', 
-                          source = 'scorecard', 
-                          topic = 'repayment',
-                          filters=list(year=2015:2016),
-                          add_labels = TRUE)
+earnings_short_df<-earnings_df %>% filter(years_after_entry==6|years_after_entry==7)
+earnings_short_df <- earnings_short_df %>% unite(match,unitid,cohort_year,remove=FALSE)
+earnings_short_df <- admit_df %>% right_join(earnings_short_df,by="match")
 
-grad_df<-get_education_data(level = 'college-university', 
-                             source = 'ipeds', 
-                             topic = 'grad-rates',
-                             filters=list(year=2006:2016),
-                             add_labels = TRUE)
+earnings_mid_df<-earnings_df%>% filter(years_after_entry==8)
+earnings_mid_df <- earnings_mid_df %>% unite(match,unitid,cohort_year,remove=FALSE)
+earnings_mid_df <- admit_df %>% right_join(earnings_mid_df,by="match")
 
-grad_final<-grad_df %>%  filter(race=='Total'&sex=='Total'&subcohort=='Total')
+earnings_long_df<-earnings_df%>% filter(years_after_entry==9|years_after_entry==10)
+earnings_long_df <- earnings_long_df %>% unite(match,unitid,cohort_year,remove=FALSE)
+earnings_long_df <- admit_df %>% left_join(earnings_long_df,by="match")
 
-write.csv(admit_df,"admit.csv")
-write.csv(earnings_df,"earnings.csv")
-write.csv(repay_df,"repay.csv")
-write.csv(grad_final,"grad.csv")
+repay_df %>% group_by(years_since_entering_repay) %>%
+  summarize(total=sum(years_since_entering_repay)/mean(years_since_entering_repay))
 
-df3<-df2 %>% filter(years_after_entry==6|years_after_entry==7)
-
-df4 <- df %>% unite(match,unitid,year,remove=FALSE)
-
-df3 <- df3 %>% unite(match,unitid,cohort_year,remove=FALSE)
-
-df_full <- df4 %>% right_join(df3,by="match")
-
-write.csv(df_full,"df_full.csv")
+repay_5<-repay_df %>% filter(years_since_entering_repay==5)
+repay_5<-repay_5%>% unite(match,unitid,cohort_year,remove=FALSE)
+repay_5 <- admit_df %>% right_join(repay_5,by="match")
