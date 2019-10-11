@@ -1,4 +1,6 @@
-df_full<-read.csv("df_full.csv")
+library(tidyverse)
+
+df_full<-earnings_short_df
 
 df25<-df_full%>% filter(earnings_mean>0&sat_math_25_pctl>0)
 
@@ -58,3 +60,9 @@ df_act_english %>% ggplot(aes(x=earnings_mean,y=act_english_25_pctl))+
 
 act_earnings_regress<-lm(earnings_mean~act_math_25_pctl+act_english_25_pctl,data=df_act_math)
 summary(act_earnings_regress)
+
+df_standard<-df_full %>% mutate(sat_math_25_stand=(sat_math_25_pctl-sat_math_av)/sat_math_sd,
+                                sat_writ_25_stand=(sat_writing_25_pctl-sat_writ_av)/sat_writ_sd,
+                                sat_crit_25_stand=(sat_crit_read_25_pctl-sat_crit_av)/sat_crit_sd,
+                                act_math_25_stand=(act_math_25_pctl-act_math_av)/act_math_sd,
+                                act_english_25_stand=(act_english_25_pctl-act_english_av)/act_english_sd)
