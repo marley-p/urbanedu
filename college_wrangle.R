@@ -4,7 +4,8 @@ library(educationdata)
 admit_df<-read.csv("admit.csv")
 earnings_df<-read.csv("earnings.csv")
 repay_df<-read.csv("repay.csv")
-grad_final<-("grad.csv")
+grad_final<-read.csv("grad.csv")
+student_df<-read.csv("student.csv")
 
 admit_df <- admit_df %>% unite(match,unitid,year,remove=FALSE)
 
@@ -20,9 +21,13 @@ earnings_long_df<-earnings_df%>% filter(years_after_entry==9|years_after_entry==
 earnings_long_df <- earnings_long_df %>% unite(match,unitid,cohort_year,remove=FALSE)
 earnings_long_df <- admit_df %>% left_join(earnings_long_df,by="match")
 
-repay_df %>% group_by(years_since_entering_repay) %>%
-  summarize(total=sum(years_since_entering_repay)/mean(years_since_entering_repay))
-
 repay_5<-repay_df %>% filter(years_since_entering_repay==5)
 repay_5<-repay_5%>% unite(match,unitid,cohort_year,remove=FALSE)
 repay_5 <- admit_df %>% right_join(repay_5,by="match")
+
+grad_df<-grad_final%>% unite(match,unitid,cohort_year,remove=FALSE)
+grad_df <- admit_df %>% right_join(grad_df,by="match")
+
+student_df<-student_df%>% unite(match,unitid,year,remove=FALSE)
+student_df <- admit_df %>% right_join(student_df,by="match")
+

@@ -29,7 +29,22 @@ grad_df<-get_education_data(level = 'college-university',
 
 grad_final<-grad_df %>%  filter(race=='Total'&sex=='Total'&subcohort=='Total')
 
+student_df<-get_education_data(level = 'college-university', 
+                               source = 'scorecard', 
+                               topic = 'student-characteristics',
+                               by='aid-applicants',
+                               filters=list(year=1997:2016),
+                               add_labels = TRUE)
+
+insitut_df<-get_education_data(level = 'college-university', 
+                               source = 'ipeds', 
+                               topic = 'institutional-characteristics',
+                               filters=list(year=1997:2016),
+                               add_labels = TRUE)
+
+
 write.csv(admit_df,"admit.csv")
 write.csv(earnings_df,"earnings.csv")
 write.csv(repay_df,"repay.csv")
 write.csv(grad_final,"grad.csv")
+write.csv(student_df,"student.csv")
