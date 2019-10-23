@@ -7,7 +7,8 @@ repay_df<-read.csv("repay.csv")
 grad_final<-read.csv("grad.csv")
 student_df<-read.csv("student.csv")
 
-admit_df <- admit_df %>% unite(match,unitid,year,remove=FALSE)
+admit_df <- admit_df %>% unite(match,unitid,year,remove=FALSE) %>%
+  mutate(abb=state.abb[match(fips,state.name)])
 
 earnings_short_df<-earnings_df %>% filter(years_after_entry==6|years_after_entry==7)
 earnings_short_df <- earnings_short_df %>% unite(match,unitid,cohort_year,remove=FALSE)

@@ -1,12 +1,13 @@
 library(tidyverse)
+library(ggrepel)
 
 df_full<-earnings_short_df
 
 df25<-df_full%>% filter(earnings_mean>0&sat_math_25_pctl>0)
 
-df25 %>% ggplot(aes(x=earnings_mean,y=sat_math_25_pctl))+
+df25 %>% ggplot(aes(y=earnings_mean,x=sat_math_25_pctl))+
   geom_point()+
-  geom_smooth(method=lm)
+  geom_smooth(method=lm,formula = y ~ x)
 
 df75<-df_full%>% filter(earnings_mean>0&sat_math_75_pctl>0)
 
@@ -66,3 +67,17 @@ df_standard<-df_full %>% mutate(sat_math_25_stand=(sat_math_25_pctl-sat_math_av)
                                 sat_crit_25_stand=(sat_crit_read_25_pctl-sat_crit_av)/sat_crit_sd,
                                 act_math_25_stand=(act_math_25_pctl-act_math_av)/act_math_sd,
                                 act_english_25_stand=(act_english_25_pctl-act_english_av)/act_english_sd)
+
+df_na<- df_full %>% filter(is.na(sat_math_25_pctl))
+mean(df_na$earnings_mean)
+
+mean(df25$earnings_mean)
+
+state_av <- df25 %>% filter(!is.na(abb)) %>%
+  group_by(abb) %>%
+  summarize(satmath25=mean(sat_math_25_pctl),income=mean(earnings_mean))
+
+state_av %>% ggplot(aes(x=satmath25,y=income,label=abb)) +
+  geom_smooth(method=lm)+
+  geom_point()+
+  geom_text_repel()

@@ -25,3 +25,9 @@ summary(student_earning_regress)
 
 student_earning_regress <-lm(earnings_mean~faminc_med,data=student_earnings_cut)
 summary(student_earning_regress)
+
+student_na<- student_df %>% filter(is.na(sat_math_25_pctl),
+                                   faminc_med>0)
+mean(student_na$faminc_med,na.rm=TRUE)
+
+mean(student_math$faminc_med)
