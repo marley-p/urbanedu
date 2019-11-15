@@ -6,6 +6,7 @@ earnings_df<-read.csv("earnings.csv")
 repay_df<-read.csv("repay.csv")
 grad_final<-read.csv("grad.csv")
 student_df<-read.csv("student.csv")
+#id_df<-read.csv("id.csv")
 
 admit_df <- admit_df %>% unite(match,unitid,year,remove=FALSE) %>%
   mutate(abb=state.abb[match(fips,state.name)])

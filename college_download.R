@@ -42,9 +42,15 @@ insitut_df<-get_education_data(level = 'college-university',
                                filters=list(year=1997:2016),
                                add_labels = TRUE)
 
+id_df<-get_education_data(level = 'college-university', 
+                               source = 'ipeds', 
+                               topic = 'directory',
+                               filters=list(year=1997:2016),
+                               add_labels = TRUE)
 
 write.csv(admit_df,"admit.csv")
 write.csv(earnings_df,"earnings.csv")
 write.csv(repay_df,"repay.csv")
 write.csv(grad_final,"grad.csv")
 write.csv(student_df,"student.csv")
+write.csv(id_df,"id.csv")

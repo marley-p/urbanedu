@@ -1,4 +1,5 @@
 student_math<-student_df %>% filter(sat_math_25_pctl>0, faminc_med>0)
+student_income<-student_math %>% right_join(earnings_mid_df,by="match")
 
 student_math %>% ggplot(aes(x=sat_math_25_pctl,y=faminc_med))+
   geom_point()+
@@ -14,6 +15,10 @@ student_regress <-lm(faminc_med~sat_crit_read_25_pctl+sat_writing_25_pctl+sat_ma
 summary(student_regress)
 
 student_earnings<- student_df %>% left_join(earnings_short_df,by="match")
+
+student_earnings_cut %>% ggplot(aes(x=faminc_med,y=earnings_mean))+
+  geom_point(color="red",alpha=0.2)+
+  geom_smooth(method=lm)
 
 student_earnings_cut<- student_earnings %>% filter(sat_math_25_pctl.x>0, faminc_med>0,earnings_mean>0)
 
